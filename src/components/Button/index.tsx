@@ -8,10 +8,8 @@ const Button: React.FunctionComponent<ButtonProps> = ({
   children,
   ...rest
 }) => (
-  <Container>
-    <button type="button" {...rest}>
-      {children}
-    </button>
+  <Container type="button" {...rest}>
+    {children}
   </Container>
 );
 
