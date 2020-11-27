@@ -1,8 +1,9 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { FiMail, FiUser, FiLock, FiArrowLeft } from 'react-icons/fi';
 
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
+import { FormHandles } from '@unform/core';
 import Logo from '../../assets/logo.svg';
 
 import Input from '../../components/Input';
@@ -11,19 +12,25 @@ import Button from '../../components/Button';
 import { Container, Content, Background } from './styles';
 
 const SignUp: React.FC = () => {
+  const formRef = useRef<FormHandles>(null);
+
   const handleSubmit = useCallback(async (data: object) => {
     try {
       const schema = Yup.object().shape({
         name: Yup.string().required('Nome é obrigatório.'),
-        email: Yup.string().required().email('Digite um e-mail válido.'),
+        email: Yup.string().required('Digite um e-mail válido.').email(),
         password: Yup.string()
           .required()
-          .min(6, 'Senha deve conter pelo menos 6 digitos.'),
+          .min(6, 'Senha invalida, deve conter pelo menos 6 digitos.'),
       });
-
-      await schema.validate(data);
+      await schema.validate(data, {
+        abortEarly: false,
+      });
     } catch (err) {
-      console.error(err);
+      console.log(err.inner);
+      formRef.current?.setErrors({
+        name: 'NOME OBRIGATORIO',
+      });
     }
   }, []);
 
@@ -33,11 +40,11 @@ const SignUp: React.FC = () => {
 
       <Content>
         <img src={Logo} alt="GoBarber" />
-        <Form onSubmit={handleSubmit}>
+        <Form ref={formRef} onSubmit={handleSubmit}>
+          {' '}
+          {/* *passando como ref o useRef* */}
           <h1>Faça seu Cadastro</h1>
-
           <Input icon={FiUser} name="name" type="text" placeholder="Nome" />
-
           <Input icon={FiMail} name="email" type="text" placeholder="E-mail" />
           <Input
             icon={FiLock}
@@ -45,7 +52,6 @@ const SignUp: React.FC = () => {
             type="password"
             placeholder="Senha"
           />
-
           <Button type="submit">Cadastrar</Button>
         </Form>
         <a href="login">
