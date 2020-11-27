@@ -21,7 +21,7 @@ const Input: React.FunctionComponent<InputProps> = ({
   icon: Icon,
   ...rest
 }) => {
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const { fieldName, defaultValue, error, registerField } = useField(name);
 
   useEffect(() => {
@@ -33,18 +33,27 @@ const Input: React.FunctionComponent<InputProps> = ({
   }, [fieldName, registerField]);
 
   const [isFocused, setIsFocused] = useState(false);
+  const [isFilled, setIsFilled] = useState(false);
 
-  const handleInputBlur = useCallback(() => {
-    setIsFocused(false);
+  const handleFocus = useCallback(() => {
+    setIsFocused(true);
   }, []);
 
+  const handleInputBlur = useCallback(() => {
+    // usar o useCallback para que essa função não seja renderizada sempre que a função pai por chamada REGRA
+    setIsFocused(false);
+    // o segundo parametro é tipo o useEffect, usado para disparar novamente a função caso algo mude ali dentro
+    if (inputRef.current?.value) {
+      setIsFilled(true);
+    } else {
+      setIsFilled(false);
+    }
+  }, []);
   return (
-    <Container isFocused={isFocused}>
+    <Container isFilled={isFilled} isFocused={isFocused}>
       {Icon && <Icon size={20} />}
       <input
-        onFocus={() => {
-          setIsFocused(true);
-        }}
+        onFocus={handleFocus}
         onBlur={handleInputBlur}
         defaultValue={defaultValue}
         ref={inputRef}
