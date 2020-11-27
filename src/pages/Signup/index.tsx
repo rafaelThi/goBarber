@@ -10,12 +10,15 @@ import Input from '../../components/Input';
 import Button from '../../components/Button';
 
 import { Container, Content, Background } from './styles';
+import getValidationError from '../../Utils/getValidationError';
 
 const SignUp: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
 
   const handleSubmit = useCallback(async (data: object) => {
     try {
+      formRef.current?.setErrors({});
+
       const schema = Yup.object().shape({
         name: Yup.string().required('Nome é obrigatório.'),
         email: Yup.string().required('Digite um e-mail válido.').email(),
@@ -28,9 +31,8 @@ const SignUp: React.FC = () => {
       });
     } catch (err) {
       console.log(err.inner);
-      formRef.current?.setErrors({
-        name: 'NOME OBRIGATORIO',
-      });
+
+      formRef.current?.setErrors(getValidationError(err));
     }
   }, []);
 
