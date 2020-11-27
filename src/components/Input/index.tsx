@@ -1,5 +1,11 @@
 /* eslint-disable no-restricted-globals */
-import React, { InputHTMLAttributes, useEffect, useRef, useState } from 'react';
+import React, {
+  InputHTMLAttributes,
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+} from 'react';
 import { IconBaseProps } from 'react-icons/lib';
 import { useField } from '@unform/core';
 
@@ -27,6 +33,11 @@ const Input: React.FunctionComponent<InputProps> = ({
   }, [fieldName, registerField]);
 
   const [isFocused, setIsFocused] = useState(false);
+
+  const handleInputBlur = useCallback(() => {
+    setIsFocused(false);
+  }, []);
+
   return (
     <Container isFocused={isFocused}>
       {Icon && <Icon size={20} />}
@@ -34,9 +45,7 @@ const Input: React.FunctionComponent<InputProps> = ({
         onFocus={() => {
           setIsFocused(true);
         }}
-        onBlur={() => {
-          setIsFocused(false);
-        }}
+        onBlur={handleInputBlur}
         defaultValue={defaultValue}
         ref={inputRef}
         {...rest}
