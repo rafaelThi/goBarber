@@ -61,7 +61,7 @@ const Input: React.FunctionComponent<InputProps> = ({
         {...rest}
       />
       {error && (
-        <Error>
+        <Error title={error}>
           <FiAlertCircle color="#c53030" size={20} />
         </Error>
       )}
