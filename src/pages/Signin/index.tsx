@@ -12,6 +12,7 @@ import Button from '../../components/Button';
 import { Container, Content, Background } from './styles';
 import getValidationError from '../../Utils/getValidationError';
 import useAuth from '../../hooks/AuthContext';
+import ToastContainer from '../../components/ToastContainer';
 
 interface SignInFormData {
   email: string;
@@ -44,9 +45,12 @@ const SignIn: React.FC = () => {
           password: data.password,
         });
       } catch (err) {
-        console.log(err.inner);
+        if (err instanceof Yup.ValidationError) {
+          // vendo se o err é do Yup
+          console.log(err.inner);
 
-        formRef.current?.setErrors(getValidationError(err));
+          formRef.current?.setErrors(getValidationError(err));
+        }
       }
     },
     [signIn],
