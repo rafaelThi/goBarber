@@ -52,10 +52,14 @@ const SignIn: React.FC = () => {
 
           formRef.current?.setErrors(getValidationError(err));
         }
-        addToast();
+        addToast({
+          type: 'error',
+          title: 'Erro de login',
+          description: 'erro de login, dados incorretos',
+        });
       }
     },
-    [addToast, signIn],
+    [signIn, addToast],
   );
 
   return (
