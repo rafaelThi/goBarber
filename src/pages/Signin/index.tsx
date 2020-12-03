@@ -11,8 +11,8 @@ import Button from '../../components/Button';
 
 import { Container, Content, Background } from './styles';
 import getValidationError from '../../Utils/getValidationError';
-import useAuth from '../../hooks/AuthContext';
-import ToastContainer from '../../components/ToastContainer';
+import useAuth from '../../hooks/AuthHook';
+import { useToast } from '../../hooks/ToastHook';
 
 interface SignInFormData {
   email: string;
@@ -23,7 +23,7 @@ const SignIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
 
   const { user, signIn } = useAuth();
-
+  const { addToast } = useToast();
   console.log(user);
 
   const handleSubmit = useCallback(
@@ -40,7 +40,8 @@ const SignIn: React.FC = () => {
         await schema.validate(data, {
           abortEarly: false,
         });
-        signIn({
+        await signIn({
+          // adição do await, para poder existir a tratativa desse erro.
           email: data.email,
           password: data.password,
         });
@@ -51,9 +52,10 @@ const SignIn: React.FC = () => {
 
           formRef.current?.setErrors(getValidationError(err));
         }
+        addToast();
       }
     },
-    [signIn],
+    [addToast, signIn],
   );
 
   return (
