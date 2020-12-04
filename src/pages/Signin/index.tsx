@@ -12,7 +12,7 @@ import Button from '../../components/Button';
 
 import { Container, Content, AnimationContainer, Background } from './styles';
 import getValidationError from '../../Utils/getValidationError';
-import useAuth from '../../hooks/AuthHook';
+import { useAuth } from '../../hooks/AuthHook';
 import { useToast } from '../../hooks/ToastHook';
 
 interface SignInFormData {
